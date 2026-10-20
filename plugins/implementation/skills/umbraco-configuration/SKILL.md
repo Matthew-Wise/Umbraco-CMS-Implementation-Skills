@@ -34,7 +34,8 @@ production single server — it is the subset the others extend. A developer mac
 them: a fresh install already runs in `BackofficeDevelopment` mode with no configuration, and a
 production profile will not boot there.
 
-Each profile is a starting point: copy it to the target `appsettings.<Environment>.json`, replace
+Open the scenario's reference before writing any configuration, and start from its asset. Each
+profile is a starting point: copy it to the target `appsettings.<Environment>.json`, replace
 the `<Placeholder>` tokens, then keep only what differs from Umbraco's defaults.
 
 ## Rules that apply to every profile
@@ -73,6 +74,6 @@ itself is a 17+ option and is described, not shipped, in the load-balanced refer
 Assertions live in [`evals/evals.json`](evals/evals.json); run them with the
 `umbraco-skill-evaluator` skill.
 
-The profiles are checked against Umbraco's options classes, schema and production validators, not
-booted in a load-balanced or Azure topology. When handing over, say "validated against Umbraco's
+Coverage tier: **Bound**. The profiles are checked against Umbraco's options classes, schema and
+production validators (`examples/golden-configs/`), not booted in a load-balanced or Azure topology. When handing over, say "validated against Umbraco's
 configuration model", never "tested on Azure" or "tested under load balancing".

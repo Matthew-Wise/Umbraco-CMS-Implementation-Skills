@@ -22,7 +22,7 @@ not in `assets/` and change between releases.
 
 | Setting | Why |
 |---|---|
-| `Global:MainDomLock` = `FileSystemMainDomLock` | The default semaphore lock is Windows-only and does not work across App Service instances |
+| `Global:MainDomLock` = `FileSystemMainDomLock` | Guard: already the default since Umbraco 10. Kept explicit, as the Azure load-balancing docs still do, so a lock named in a base file (the Windows-only `MainDomSemaphoreLock` fails across App Service instances) cannot apply in production |
 | `Hosting:LocalTempStorageLocation` = `EnvironmentTemp` | Keeps Umbraco's temp files on the instance's fast local disk, not the remote file share |
 | `Examine:LuceneDirectoryFactory` = `SyncedTempFileSystemDirectoryFactory` | Lucene must read from local disk; this syncs the remote index to it. On a scaled-out *front end* use `TempFileSystemDirectoryFactory` instead (load-balanced reference) |
 | `Umbraco:Storage:AzureBlob:Media:ContainerName` | Package configuration, outside `Umbraco:CMS` — the schema does not cover it |

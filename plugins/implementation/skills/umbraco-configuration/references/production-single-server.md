@@ -29,15 +29,24 @@ Fetch these before adding a setting that is not already in `assets/production.js
 | `Serilog` minimum levels | Opinion: keeps framework noise out of the logs |
 
 Never add a value to a section just to restate its default — it hides what the site actually
-chose to change. `Hosting:Debug` is the one deliberate exception.
+chose to change. `Hosting:Debug` is a deliberate exception here, as is `Global:MainDomLock` in the
+load-balanced and Azure profiles.
 
 ## Before you switch
 
 Do these in development first, while the site still boots without them:
 
-- In the `.csproj`, remove `<RazorCompileOnBuild>false</RazorCompileOnBuild>` and
-  `<RazorCompileOnPublish>false</RazorCompileOnPublish>` so views compile into the assembly.
-  Skipping this is what turns every page into a 404 once Production mode is on.
+- If `ModelsBuilder:ModelsMode` is `InMemoryAuto` (the project template's default), move off it
+  first. Under `InMemoryAuto` the models exist only at runtime, so views that use them cannot
+  compile at build time and the next step breaks the build. Set `ModelsMode` to `SourceCodeAuto`
+  (or `SourceCodeManual`), run the site, generate the models (**Settings > Models Builder >
+  Generate models**) and commit them. The template adds the `Umbraco.Cms.DevelopmentMode.Backoffice`
+  package only for `InMemoryAuto`; it registers nothing outside `BackofficeDevelopment` mode, so it
+  can stay for local backoffice work or be removed once no environment uses `InMemoryAuto`.
+- Then, in the `.csproj`, remove `<RazorCompileOnBuild>false</RazorCompileOnBuild>` and
+  `<RazorCompileOnPublish>false</RazorCompileOnPublish>` so views compile into the assembly, and
+  fix any compilation errors that exposes. Skipping this is what turns every page into a 404 once
+  Production mode is on.
 - Move any unattended-install password and connection string out of `appsettings*.json` into
   user-secrets (`dotnet user-secrets set "Umbraco:CMS:Unattended:UnattendedUserPassword" "<password>"`).
 

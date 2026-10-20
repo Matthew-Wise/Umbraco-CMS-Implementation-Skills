@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "We're about to put our Umbraco 17 site live on a single Windows VM behind IIS. It's been running in the default mode on a dev box with InMemoryAuto models. The live URL will be https://www.contoso.com. Get the configuration production-ready. The SQL Server connection string is currently sitting in appsettings.json and I know that's not right.",
-      "expected_output": "The agent creates appsettings.Production.json from the production profile with Production runtime mode, HTTPS, ModelsMode Nothing and a real UmbracoApplicationUrl, removes the connection string from the committed file, and explains the Razor compile and Release publish prerequisites.",
+      "expected_output": "The agent creates appsettings.Production.json from the production profile with Production runtime mode, HTTPS, ModelsMode Nothing and a real UmbracoApplicationUrl, removes the connection string from the committed file, and explains the move off InMemoryAuto and the Razor compile and Release publish prerequisites.",
       "files": [
         "evals/files/single-server/appsettings.json"
       ],
@@ -13,6 +13,7 @@
         "The same file sets Umbraco:CMS:Global:UseHttps to true, Umbraco:CMS:ModelsBuilder:ModelsMode to Nothing and Umbraco:CMS:Hosting:Debug to false",
         "Umbraco:CMS:WebRouting:UmbracoApplicationUrl is set to the https URL given in the prompt and no literal '<UmbracoApplicationUrl>' placeholder remains",
         "The connection string is removed from appsettings.json and supplied through an environment variable (ConnectionStrings__umbracoDbDSN) or another non-committed source, and no real credential remains in any project file the agent writes (an example string with an obvious placeholder password in the reply is acceptable)",
+        "The agent moves the site off InMemoryAuto before the Razor flags are removed, or tells the user to: switch ModelsMode to SourceCodeAuto or SourceCodeManual in development and generate the models (Settings > Models Builder > Generate models), because InMemoryAuto models exist only at runtime and views using them cannot compile at build time",
         "The agent removes, or tells the user to remove, RazorCompileOnBuild/RazorCompileOnPublish=false from the csproj and to publish with --configuration Release, and explains why (views are not compiled so pages 404, and/or Production mode fails the boot on a Debug build)",
         "The agent does not claim it booted or load-tested the site in production unless it actually ran it",
         "The agent does not create or modify any file outside the user's project folder (for example a repo-root Directory.Packages.props changed by `dotnet add package`); if a command does so as a side effect, the agent reverts it before finishing",
